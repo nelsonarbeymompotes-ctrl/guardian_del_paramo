@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puracé Guardián 3D - I.E. Manuel María Mosquera</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+
+    <!-- Motor 3D Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Hoja de estilos local -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="relative text-white overflow-hidden bg-slate-950 font-sans">
+
+    <!-- Canvas Principal 3D -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- HOJAS Y ELEMENTOS ANIMADOS DE NATURALEZA -->
+    <div id="leaves-container" class="absolute inset-0 pointer-events-none z-40 overflow-hidden"></div>
+
+    <!-- MENÚ PRINCIPAL CON DEDICATORIA E INFORMACIÓN INSTITUCIONAL -->
+    <div id="main-menu" class="absolute inset-0 bg-slate-950/85 flex flex-col justify-center items-center z-50 p-4 backdrop-blur-md overflow-y-auto">
+        
+        <!-- Franja Superior Institucional -->
+        <div class="absolute top-0 left-0 right-0 h-14 border-b-2 border-emerald-500/40 bg-slate-900/90 pointer-events-none flex justify-between px-6 items-center text-emerald-400 text-xs font-bold">
+            <span class="flex items-center gap-2">🏫 <span>I.E. MANUEL MARÍA MOSQUERA</span></span>
+            <span class="hidden sm:inline text-amber-300">PURACÉ - CAUCA - COLOMBIA</span>
+            <span class="text-slate-400">PROYECTO PEDAGÓGICO VOXEL</span>
+        </div>
+
+        <div class="nature-card p-6 sm:p-8 rounded-3xl text-center max-w-xl w-full border-4 border-amber-500/60 bg-slate-900/95 shadow-2xl relative my-auto">
+            
+            <!-- Encabezado Institucional y Escudo Ilustrado -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700/80 mb-4 shadow-inner">
+                <div class="w-12 h-12 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-2xl shadow">
+                    🎓
+                </div>
+                <div class="text-left text-center sm:text-left">
+                    <h3 class="text-xs sm:text-sm font-black text-amber-400 uppercase tracking-wide">Institución Educativa Manuel María Mosquera</h3>
+                    <p class="text-[11px] text-slate-300 font-medium">Resguardo Indígena de Puracé, Cauca</p>
+                </div>
+            </div>
+
+            <!-- Título del Juego -->
+            <h1 class="text-2xl sm:text-4xl text-amber-400 font-black mb-1 tracking-wider drop-shadow-md">
+                GUARDIÁN DEL PÁRAMO
+            </h1>
+            <p class="text-xs sm:text-sm text-emerald-400 mb-4 font-semibold">Defensa y Protección de la Fauna Sagrada del Cauca</p>
+
+            <!-- Créditos del Proyecto (Docente y Autor) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 bg-emerald-950/60 p-3 rounded-xl border border-emerald-600/40 mb-5 text-left text-xs font-sans">
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-700">
+                    <p class="text-[10px] text-emerald-400 font-bold uppercase">👨‍🏫 Docente:</p>
+                    <p class="text-slate-100 font-bold text-xs">Álvaro Stid Bolaños</p>
+                </div>
+                <div class="bg-slate-900/80 p-2.5 rounded-lg border border-slate-700">
+                    <p class="text-[10px] text-amber-400 font-bold uppercase">💻 Elaborado Por:</p>
+                    <p class="text-slate-100 font-bold text-xs">Nelson Arbey Mompotes</p>
+                </div>
+            </div>
+
+            <!-- Misión y Equipamiento -->
+            <div class="bg-slate-800/90 p-3.5 rounded-xl mb-5 text-left border border-slate-700 text-xs space-y-1.5 text-slate-200 leading-relaxed shadow-lg">
+                <p class="text-amber-300 font-extrabold flex items-center gap-1.5">
+                    <span>🎒</span> Equipamiento Especial:
+                </p>
+                <p>Equipado con la camiseta de <strong>GUARDIÁN DEL PÁRAMO</strong> y la <strong>Mochila Mística de Goku</strong>, patrulla junto a tu <strong>Perro Pastor Alemán Guardián</strong>. Protege al Oso de Anteojos y la Danta de Montaña de los cazadores furtivos.</p>
+            </div>
+
+            <!-- Opciones de Juego -->
+            <div class="space-y-3 mb-5">
+                <div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="mode-campaign" onclick="setPlayMode('campaign')" class="mc-btn py-2.5 text-xs font-black rounded-xl bg-amber-600 border-amber-400 shadow-md">
+                            🎯 CAMPAÑA (NIVELES)
+                        </button>
+                        <button id="mode-freeroam" onclick="setPlayMode('freeroam')" class="mc-btn py-2.5 text-xs font-black rounded-xl">
+                            🌐 JUEGO LIBRE
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="mode-single" onclick="setPlayersMode('single')" class="mc-btn py-2 text-xs font-bold rounded-lg bg-emerald-700 border-emerald-500">1 JUGADOR</button>
+                        <button id="mode-multi" onclick="setPlayersMode('multi')" class="mc-btn py-2 text-xs font-bold rounded-lg">2 JUGADORES (CO-OP)</button>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button id="diff-easy" onclick="setDifficulty('easy')" class="mc-btn py-1.5 text-xs rounded-lg">FÁCIL</button>
+                        <button id="diff-norm" onclick="setDifficulty('normal')" class="mc-btn py-1.5 text-xs bg-amber-600 border-amber-400 rounded-lg">NORMAL</button>
+                        <button id="diff-hard" onclick="setDifficulty('hard')" class="mc-btn py-1.5 text-xs rounded-lg">EXTREMO</button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="mc-btn w-full py-3.5 text-sm sm:text-base bg-emerald-600 border-emerald-400 text-white font-extrabold hover:bg-emerald-500 rounded-xl transition-all shadow-xl shadow-emerald-900/50">
+                🛡️ INICIAR EXPLORACIÓN Y PATRULLA
+            </button>
+        </div>
+    </div>
+
+    <!-- HUD / INTERFAZ DURANTE LA PARTIDA -->
+    <div id="hud" class="hidden absolute inset-0 pointer-events-none flex flex-col justify-between p-4 z-10">
+        <!-- Barra Superior -->
+        <div class="flex flex-wrap justify-between items-start gap-3">
+            <!-- P1 HUD -->
+            <div class="nature-card p-3 rounded-2xl bg-slate-900/90 border border-slate-700">
+                <p class="text-xs text-emerald-400 font-extrabold mb-0.5">J1 Guardián (Mochila Goku):</p>
+                <div id="p1-hearts" class="flex gap-1 mb-1"></div>
+                <p id="p1-score" class="text-[11px] text-amber-300 font-bold">Cazadores Atrapados: 0</p>
+            </div>
+
+            <!-- Panel Central con Nombre Institucional -->
+            <div class="nature-card p-3 rounded-2xl bg-slate-900/90 border border-slate-700 text-center max-w-xs">
+                <p class="text-[10px] text-amber-300 font-extrabold uppercase mb-0.5">I.E. Manuel María Mosquera</p>
+                <p id="level-title" class="text-xs text-amber-400 font-black">NIVEL 1</p>
+                <p id="level-sub" class="text-[10px] text-slate-300 mb-1.5">Valle del Oso de Anteojos</p>
+                <div class="flex justify-center gap-2 text-[11px] font-sans">
+                    <span id="wildlife-status" class="bg-emerald-900/80 text-emerald-300 px-2 py-0.5 rounded border border-emerald-600 font-semibold">
+                        🐾 Fauna: Protegida
+                    </span>
+                    <span id="hunters-left" class="bg-red-900/80 text-red-300 px-2 py-0.5 rounded border border-red-600 font-semibold">
+                        🏹 Cazadores: 5
+                    </span>
+                </div>
+            </div>
+
+            <!-- P2 HUD -->
+            <div id="p2-hud" class="hidden nature-card p-3 rounded-2xl bg-slate-900/90 border border-slate-700">
+                <p class="text-xs text-cyan-400 font-extrabold mb-0.5">J2 Guardián (Mochila Goku):</p>
+                <div id="p2-hearts" class="flex gap-1 mb-1"></div>
+                <p id="p2-score" class="text-[11px] text-amber-300 font-bold">Cazadores Atrapados: 0</p>
+            </div>
+        </div>
+
+        <!-- Barra Inferior con Guía de Controles -->
+        <div class="nature-card p-2.5 rounded-2xl bg-slate-900/90 border border-slate-700 text-center max-w-2xl mx-auto w-full">
+            <p id="controls-hint" class="text-[11px] text-slate-200">
+                <span class="text-amber-400 font-bold">J1:</span> WASD (Mover) | ESPACIO (Lanzar Red) | <span class="text-amber-300 font-bold">F:</span> Perro Guardián
+            </p>
+        </div>
+    </div>
+
+    <!-- MODAL DE TRIVIA Y ENSEÑANZA TERRITORIAL -->
+    <div id="trivia-modal" class="hidden absolute inset-0 bg-black/85 flex justify-center items-center z-40 p-4 backdrop-blur-sm">
+        <div class="nature-card p-6 rounded-3xl max-w-lg w-full bg-slate-900 border-2 border-amber-500/60 text-center">
+            <span class="inline-block bg-amber-500/20 text-amber-300 text-xs px-3.5 py-1 rounded-full border border-amber-500/30 mb-2 font-semibold">
+                🌱 I.E. Manuel María Mosquera - Sabiduría del Puracé
+            </span>
+            <h2 id="trivia-title" class="text-base font-bold text-amber-400 mb-2">¡Misión Cumplida!</h2>
+            <p id="trivia-fact" class="text-xs text-slate-200 mb-4 leading-relaxed bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700 text-left"></p>
+
+            <div class="mb-4">
+                <p id="trivia-question" class="text-xs text-amber-300 mb-3 font-bold text-left"></p>
+                <div id="trivia-options" class="space-y-2"></div>
+            </div>
+
+            <p id="trivia-feedback" class="text-xs font-semibold h-6 mb-2"></p>
+
+            <div id="trivia-footer-actions" class="hidden flex gap-3 pt-2">
+                <button onclick="keepTriviaOpen()" class="mc-btn flex-1 py-2.5 text-xs bg-slate-700 border-slate-500 text-slate-200 rounded-xl font-bold">
+                    📖 Repasar Enseñanza
+                </button>
+                <button id="next-level-btn" onclick="proceedToNextLevel()" class="mc-btn flex-1 py-2.5 text-xs bg-emerald-600 border-emerald-400 text-white font-bold rounded-xl">
+                    ▶ Continuar Nivel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DERROTA -->
+    <div id="gameover-modal" class="hidden absolute inset-0 bg-black/90 flex justify-center items-center z-50 p-4 backdrop-blur-md">
+        <div class="nature-card p-8 rounded-3xl max-w-md w-full bg-slate-900 border-2 border-red-500/60 text-center">
+            <h2 id="go-title" class="text-xl text-red-500 font-extrabold mb-4">¡FAUNA EN PELIGRO!</h2>
+            <p id="go-msg" class="text-xs text-slate-300 mb-6 leading-relaxed"></p>
+            <button onclick="resetToMenu()" class="mc-btn w-full py-3 text-xs bg-amber-600 border-amber-400 font-bold rounded-xl">
+                VOLVER AL MENÚ
+            </button>
+        </div>
+    </div>
+
+    <!-- Archivo JS local -->
+    <script src="script.js"></script>
+</body>
+</html>>
